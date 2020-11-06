@@ -80,4 +80,24 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { register, login, updateProfile };
+const updateProfileImage = async (req, res) => {
+  const { user } = req;
+  const isUser = await User.findById(user.id);
+  try {
+    if (!isUser) {
+      res.status(401).json({ message: "User not found" });
+    }
+    const updateUserProfile = await User.findByIdAndUpdate(
+      { _id: user.id },
+      { profileImage: req.file.path }
+    );
+    res.status(201).json({ message: "Image Uploaded Successfully " });
+  } catch (error) {
+    res.status(422).json({
+      success: false,
+      message: error,
+    });
+  }
+};
+
+module.exports = { register, login, updateProfile, updateProfileImage };
