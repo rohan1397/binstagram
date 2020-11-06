@@ -34,7 +34,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const data = req.body;
-  const user = await User.findOne({ email: data.email }, {});
+  const user = await User.findOne({ email: data.email });
 
   if (!user) {
     res.status(401).json({ message: "Invalid Credentials!!" });
@@ -59,4 +59,25 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const updateProfile = async (req, res) => {
+  const { user } = req;
+  const data = req.body;
+  const isUser = await User.findById(user.id);
+  try {
+    if (!isUser) {
+      res.status(401).json({ message: "User not found" });
+    }
+    const updateUserProfile = await User.findByIdAndUpdate(
+      { _id: user.id },
+      data
+    );
+    res.status(204).json({});
+  } catch (error) {
+    res.status(422).json({
+      success: false,
+      message: error,
+    });
+  }
+};
+
+module.exports = { register, login, updateProfile };
