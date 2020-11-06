@@ -37,6 +37,10 @@ const userSchema = mongoose.Schema(
       trim: true,
       enum: config.gender,
     },
+    profileImage: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
