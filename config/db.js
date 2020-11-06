@@ -12,13 +12,6 @@ const clientOption = {
   useFindAndModify: false,
 };
 
-const db = mongoose.createConnection(process.env.DB_CONNECTION, clientOption);
+const db = mongoose.connect(process.env.DB_CONNECTION, clientOption);
 
-db.on("error", () => logger.error("MongoDB Connection Error>> : "));
-db.once("open", function () {
-  logger.info("client MongoDB Connection ok!");
-});
-
-module.exports = {
-  db,
-};
+module.exports = db;
