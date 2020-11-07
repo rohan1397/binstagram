@@ -29,4 +29,8 @@ router
     userController.updateProfileImage
   );
 
+router.route("/my").get(isAuth, userController.getMyProfile);
+
+router.route("/other").get(isAuth, userController.getOtherProfile);
+
 module.exports = router;

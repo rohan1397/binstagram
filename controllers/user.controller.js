@@ -1,6 +1,7 @@
 const User = require("../models/users/user.model");
 const bcrypt = require("bcrypt");
 const { authenticatePassword } = require("../helpers/authPassword");
+const authenticateUser = require("../helpers/authUser");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
@@ -62,7 +63,8 @@ const login = async (req, res) => {
 const updateProfile = async (req, res) => {
   const { user } = req;
   const data = req.body;
-  const isUser = await User.findById(user.id);
+
+  const isUser = authenticateUser(User, user);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
@@ -82,7 +84,7 @@ const updateProfile = async (req, res) => {
 
 const updateProfileImage = async (req, res) => {
   const { user } = req;
-  const isUser = await User.findById(user.id);
+  const isUser = authenticateUser(User, user);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
@@ -100,4 +102,54 @@ const updateProfileImage = async (req, res) => {
   }
 };
 
-module.exports = { register, login, updateProfile, updateProfileImage };
+const getMyProfile = async (req, res) => {
+  const { user } = req;
+  const isUser = authenticateUser(User, user);
+  try {
+    if (!isUser) {
+      res.status(401).json({ message: "User not found" });
+    }
+
+    const myProfile = await User.findById(user.id, {
+      firstName: 1,
+      lastName: 1,
+      email: 1,
+      userName: 1,
+    });
+    res.status(200).json(myProfile);
+  } catch (error) {
+    res.status(422).json({
+      success: false,
+      message: error,
+    });
+  }
+};
+
+const getOtherProfile = async (req, res) => {
+  const { user } = req;
+  const isUser = authenticateUser(User, user);
+  try {
+    if (!isUser) {
+      res.status(401).json({ message: "User not found" });
+    }
+    const myProfile = await User.find(
+      { _id: { $ne: user.id } },
+      { firstName: 1, lastName: 1, email: 1, userName: 1 }
+    );
+    res.status(200).json(myProfile);
+  } catch (error) {
+    res.status(422).json({
+      success: false,
+      message: error,
+    });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  updateProfile,
+  updateProfileImage,
+  getMyProfile,
+  getOtherProfile,
+};
