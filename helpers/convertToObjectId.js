@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const convertToMongooseObjectID = async (user) => {
-  return mongoose.Types.ObjectId(user);
+const convertToMongooseObjectID = async (id) => {
+  return mongoose.Types.ObjectId(id);
 };
 
 module.exports = convertToMongooseObjectID;
