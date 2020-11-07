@@ -6,7 +6,7 @@ const convertToMongooseObjectID = require("../helpers/convertToObjectId");
 const createPost = async (req, res) => {
   const { user } = req;
   const { caption, image } = req.body;
-  const isUser = authenticateUser(User, user);
+  const isUser = authenticateUser(User, user.id);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
@@ -31,7 +31,7 @@ const createPost = async (req, res) => {
 const likeThePost = async (req, res) => {
   const { user } = req;
   const { postId } = req.body;
-  const isUser = authenticateUser(User, user);
+  const isUser = authenticateUser(User, user.id);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
@@ -53,7 +53,7 @@ const likeThePost = async (req, res) => {
 
 const getAllPost = async (req, res) => {
   const { user } = req;
-  const isUser = authenticateUser(User, user);
+  const isUser = authenticateUser(User, user.id);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
@@ -72,7 +72,7 @@ const getAllPost = async (req, res) => {
 
 const getMyPost = async (req, res) => {
   const { user } = req;
-  const isUser = authenticateUser(User, user);
+  const isUser = authenticateUser(User, user.id);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
@@ -94,7 +94,7 @@ const getMyPost = async (req, res) => {
 
 const getOthersPost = async (req, res) => {
   const { user } = req;
-  const isUser = authenticateUser(User, user);
+  const isUser = authenticateUser(User, user.id);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
@@ -116,7 +116,7 @@ const getOthersPost = async (req, res) => {
 
 const getSinglePost = async (req, res) => {
   const { user } = req;
-  const isUser = authenticateUser(User, user);
+  const isUser = authenticateUser(User, user.id);
   const { postId } = req.params;
   try {
     if (!isUser) {
@@ -124,7 +124,7 @@ const getSinglePost = async (req, res) => {
     }
     const post = await Post.findById(postId);
     if (post) {
-      res.status(200).json(post);
+      res.status(200).json({ success: true, post });
     }
   } catch (error) {
     res.status(422).json({
@@ -136,7 +136,7 @@ const getSinglePost = async (req, res) => {
 
 const deleteLikeFromPost = async (req, res) => {
   const { user } = req;
-  const isUser = authenticateUser(User, user);
+  const isUser = await authenticateUser(User, user.id);
   const { postId } = req.params;
   try {
     if (!isUser) {
@@ -159,7 +159,7 @@ const deleteLikeFromPost = async (req, res) => {
 
 const allUserlikeThePost = async (req, res) => {
   const { user } = req;
-  const isUser = authenticateUser(User, user);
+  const isUser = authenticateUser(User, user.id);
   try {
     if (!isUser) {
       res.status(401).json({ message: "User not found" });
