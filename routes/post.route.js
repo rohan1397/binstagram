@@ -11,14 +11,30 @@ router
     validate(postSchema.createPost, "body"),
     isAuth,
     postController.createPost
-  );
+  )
+  .get(isAuth, postController.getAllPost);
 
 router
-  .route("/posts/likes")
+  .route("/post/likes")
   .post(
     validate(postSchema.likeThePost, "body"),
     isAuth,
     postController.likeThePost
+  )
+  .get(isAuth, postController.allUserlikeThePost);
+
+router
+  .route("/remove-like/:postId")
+  .delete(
+    validate(postSchema.likeThePost, "params"),
+    isAuth,
+    postController.deleteLikeFromPost
   );
+
+router.route("/my-posts").get(isAuth, postController.getMyPost);
+
+router.route("/others-posts").get(isAuth, postController.getOthersPost);
+
+router.route("/posts/:postId").get(isAuth, postController.getSinglePost);
 
 module.exports = router;
